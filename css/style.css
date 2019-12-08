@@ -1,0 +1,15 @@
+.jumbotron {
+    background-color: blue;
+}
+
+#city-select{
+    background-color: cornflowerblue;
+}
+
+#current-info{
+    background-color: darkturquoise;
+}
+
+#forecast-info{
+    background-color: dodgerblue;
+}
