@@ -17,21 +17,29 @@
     <header class="jumbotron">
         <!-- Heading == The Weather Eye -->
     </header>
-    <div class="container-fluid" id="main-content"> <!-- Whole Page -->
+    <div class="container-fluid" id="main-content">
+        <!-- Whole Page -->
         <div class="row">
-            <div class="col-sm-4" id="city-select"><!-- Search Box and cities -->
+            <div class="col-sm-4" id="city-select">
+                <!-- Search Box and cities -->
                 Search Box and cities
+                <form id="searchForm" action="/action_page.php">
+                    City <input type="text" id="textInput" name="cityEntered"><br>
+                    <input type="button" id="searchButton" value="Search">
+                </form>
                 <!-- Search box for new city, returns part of ajax string -->
                 <!-- Buttons for prior searches. Stored in Localstorage. Returns part of ajax string. Maybe delete button beside it -->
             </div>
             <div class="col-sm-8">
                 <div class="container-fluid">
-                    <div class="row" id="current-info"> <!-- City current data -->
-                        City current data 
+                    <div class="row" id="current-info">
+                        <!-- City current data -->
+                        City current data
                         <!-- box displaying information. Need images. -->
                     </div>
-                    <div class="row" id="forecast-info"> <!-- City forecast -->
-                        City forecast 
+                    <div class="row" id="forecast-info">
+                        <!-- City forecast -->
+                        City forecast
                         <!-- 5/7 buttons for following days. Need images. -->
                     </div>
                 </div>
