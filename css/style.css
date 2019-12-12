@@ -11,5 +11,13 @@
 }
 
 #forecast-info{
+    background-color: white;
+}
+
+.forecast-day{
     background-color: dodgerblue;
+    width: 100px;
+    margin: 10px;
+    height: 200px;
+    border-radius: 10px;
 }
