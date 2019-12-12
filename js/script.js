@@ -1,12 +1,66 @@
 
 var citySelected = "string";
 var API_KEY = "8d81f57ecd6887950a785296ebf29d30";
+var cityListArray=[];
 // SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
 
 // On click Search function
 // takes input from search form, converts to city string
 // calls ajax
 // adds city to button list if it is not there
+ // When save icon is clicked, gets hourText from storage, checks it exists, parses to an array. Changes relevant text based on user input, saves array, calls display function
+
+
+    function buttonList(){
+
+    var cityListString = localStorage.getItem("citiesSearched"); // this is the string from the local storage
+    //convert string toDoList into array daysActivities
+    if (cityListString === null) {
+        cityListArray = [citySelected];
+    }
+    else {
+        cityListArray = JSON.parse(cityListString);
+        // NEED TO CHECK IF citySelected is in the array already
+        cityListArray.push(citySelected);
+    }
+    $("#cityButtons").html("");
+    $("#cityButtons").empty();
+
+for (x in cityListArray){
+    $("#cityButtons").append("<button>"+cityListArray[x]+"</button>");
+}
+
+// restore city list
+
+cityListString= JSON.stringify(cityListArray);
+localStorage.setItem("citiesSearched", cityListString);
+
+
+// // run through the array and create and assign buttons
+// for (var i=0; i<movies.length; i++){
+//   $("#cityButtons").append("<button>"+movies[i]+"</button>");
+// }
+//     // for (var i=0; i<cityListArray.length;i++){
+
+    // }
+
+
+  
+    // var blockClicked = $(this).parent().attr("id");
+
+    // var pos = blockClicked - 9; // converts id to array position
+
+    // daysActivities[pos] = $("#" + blockClicked).find(".inputbox").val(); // adds text in the box into the array
+
+    // toDoList = JSON.stringify(daysActivities); // stringify array
+    // localStorage.setItem("hourText", toDoList); // store array
+    // $("#" + blockClicked).find(".inputbox").addClass("hide"); // hides input box
+    // $("#" + blockClicked).find(".textarea").removeClass("hide"); // shows text
+    // displayActivities();
+
+}
+
+
 
 
 // on click button function
@@ -197,5 +251,6 @@ $("#searchButton").click(function (event) {
     console.log("city entered: " + citySelected);
     getForecast();
     getWeather();
+    buttonList();
 });
 
