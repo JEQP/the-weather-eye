@@ -1,17 +1,17 @@
 
 var citySelected = "string";
 var API_KEY = "8d81f57ecd6887950a785296ebf29d30";
-var cityListArray=[];
+var cityListArray = [];
 // SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
 
 // On click Search function
 // takes input from search form, converts to city string
 // calls ajax
 // adds city to button list if it is not there
- // When save icon is clicked, gets hourText from storage, checks it exists, parses to an array. Changes relevant text based on user input, saves array, calls display function
+// When save icon is clicked, gets hourText from storage, checks it exists, parses to an array. Changes relevant text based on user input, saves array, calls display function
 
 
-    function buttonList(){
+function buttonList() {
 
     var cityListString = localStorage.getItem("citiesSearched"); // this is the string from the local storage
     //convert string toDoList into array daysActivities
@@ -21,31 +21,37 @@ var cityListArray=[];
     else {
         cityListArray = JSON.parse(cityListString);
         // NEED TO CHECK IF citySelected is in the array already
-        cityListArray.push(citySelected);
+        // need to check if city exists
+        if (cityListArray.includes(citySelected)) {
+
+        }
+        else {
+            cityListArray.push(citySelected);
+        }
     }
     $("#cityButtons").html("");
     $("#cityButtons").empty();
 
-for (x in cityListArray){
-    $("#cityButtons").append("<button>"+cityListArray[x]+"</button>");
-}
+    for (x in cityListArray) {
+        $("#cityButtons").append("<button>" + cityListArray[x] + "</button>");
+    }
 
-// restore city list
+    // restore city list
 
-cityListString= JSON.stringify(cityListArray);
-localStorage.setItem("citiesSearched", cityListString);
+    cityListString = JSON.stringify(cityListArray);
+    localStorage.setItem("citiesSearched", cityListString);
 
 
-// // run through the array and create and assign buttons
-// for (var i=0; i<movies.length; i++){
-//   $("#cityButtons").append("<button>"+movies[i]+"</button>");
-// }
-//     // for (var i=0; i<cityListArray.length;i++){
+    // // run through the array and create and assign buttons
+    // for (var i=0; i<movies.length; i++){
+    //   $("#cityButtons").append("<button>"+movies[i]+"</button>");
+    // }
+    //     // for (var i=0; i<cityListArray.length;i++){
 
     // }
 
 
-  
+
     // var blockClicked = $(this).parent().attr("id");
 
     // var pos = blockClicked - 9; // converts id to array position
@@ -129,7 +135,23 @@ function getWeather() {
         });
 
 
+        // If the callback fails, ensure that the city is not included in the string
+    }).fail(function () {
+        var cityListString = localStorage.getItem("citiesSearched"); // this is the string from the local storage
+        cityListArray = JSON.parse(cityListString);
+        if (cityListArray.includes(citySelected)) {
+            cityListArray.pop(); // This will remove the last entry in the array, which SHOULD be and ONLY be the erroneous entry 
+        }
 
+        // redo button list and save array
+        $("#cityButtons").html("");
+        $("#cityButtons").empty();
+
+        for (x in cityListArray) {
+            $("#cityButtons").append("<button>" + cityListArray[x] + "</button>");
+        }
+        cityListString = JSON.stringify(cityListArray);
+        localStorage.setItem("citiesSearched", cityListString);
     });
 
 
