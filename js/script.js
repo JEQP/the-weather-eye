@@ -33,7 +33,7 @@ function buttonList() {
     $("#cityButtons").empty();
 
     for (x in cityListArray) {
-        $("#cityButtons").append("<button>" + cityListArray[x] + "</button>");
+        $("#cityButtons").append("<br><button type='button' class='btn btn-primary m-1'>" + cityListArray[x] + "</button>");
     }
 
     // restore city list
@@ -70,7 +70,7 @@ function buttonList() {
 
 
 // on click button function
-// takes the city from the button, converts to city string
+// takes the city from the search form, converts to city string
 // calls ajax
 
 
@@ -100,7 +100,14 @@ function getWeather() {
 
 
         var hour = a.getHours();
+        if (hour.toString().length < 2) {
+            hour = "0" + hour;
+        }
+
         var min = a.getMinutes();
+        if (min.toString().length < 2) {
+            min = "0" + min;
+        }
         var tempTime = [hour, min].join(":");
 
 
@@ -184,8 +191,8 @@ function getForecast() {
         $("#iconb").attr("src", "http://openweathermap.org/img/w/" + json.list[7].weather[0].icon + ".png");
         var bTemp = json.list[7].main.temp - 273.15;
         bTemp = bTemp.toFixed(1);
-        $("#tempb").html("Temp: " + bTemp + " °C");
-        $("#humidityb").html("Humidity: " + json.list[7].main.humidity);
+        $("#tempb").html("<br></br>Temp: " + bTemp + "°C");
+        $("#humidityb").html("<br></br>Humidity: " + json.list[7].main.humidity);
 
         var c = new Date(json.list[15].dt * 1000); // 48 hours later
         var cmonth = "" + (c.getMonth() + 1);
@@ -196,8 +203,8 @@ function getForecast() {
         $("#iconc").attr("src", "http://openweathermap.org/img/w/" + json.list[15].weather[0].icon + ".png");
         var cTemp = json.list[15].main.temp - 273.15;
         cTemp = cTemp.toFixed(1);
-        $("#tempc").html("Temp: " + cTemp + " °C");
-        $("#humidityc").html("Humidity: " + json.list[15].main.humidity);
+        $("#tempc").html("<br></br>Temp: " + cTemp + "°C");
+        $("#humidityc").html("<br></br>Humidity: " + json.list[15].main.humidity);
 
         var d = new Date(json.list[23].dt * 1000); // 72 hours later
         var dmonth = "" + (d.getMonth() + 1);
@@ -208,8 +215,8 @@ function getForecast() {
         $("#icond").attr("src", "http://openweathermap.org/img/w/" + json.list[23].weather[0].icon + ".png");
         var dTemp = json.list[23].main.temp - 273.15;
         dTemp = dTemp.toFixed(1);
-        $("#tempd").html("Temp: " + dTemp + " °C");
-        $("#humidityd").html("Humidity: " + json.list[23].main.humidity);
+        $("#tempd").html("<br></br>Temp: " + dTemp + "°C");
+        $("#humidityd").html("<br></br>Humidity: " + json.list[23].main.humidity);
 
 
 
@@ -222,8 +229,8 @@ function getForecast() {
         $("#icone").attr("src", "http://openweathermap.org/img/w/" + json.list[31].weather[0].icon + ".png");
         var eTemp = json.list[31].main.temp - 273.15;
         eTemp = eTemp.toFixed(1);
-        $("#tempe").html("Temp: " + eTemp + " °C");
-        $("#humiditye").html("Humidity: " + json.list[31].main.humidity);
+        $("#tempe").html("<br></br>Temp: " + eTemp + "°C");
+        $("#humiditye").html("<br></br>Humidity: " + json.list[31].main.humidity);
 
 
         var f = new Date(json.list[39].dt * 1000); // 120 hours later
@@ -235,8 +242,8 @@ function getForecast() {
         $("#iconf").attr("src", "http://openweathermap.org/img/w/" + json.list[39].weather[0].icon + ".png");
         var fTemp = json.list[39].main.temp - 273.15;
         fTemp = fTemp.toFixed(1);
-        $("#tempf").html("Temp: " + fTemp + " °C");
-        $("#humidityf").html("Humidity: " + json.list[39].main.humidity);
+        $("#tempf").html("<br></br>Temp: " + fTemp + "°C");
+        $("#humidityf").html("<br></br>Humidity: " + json.list[39].main.humidity);
 
 
 
@@ -275,4 +282,19 @@ $("#searchButton").click(function (event) {
     getWeather();
     buttonList();
 });
+// Checks for saved cities when page loads and adds them 
+$(document).ready(function () {
+    var cityListString = localStorage.getItem("citiesSearched"); // this is the string from the local storage
+    if (cityListString === null) {
+        return;
+    }
+    else {
+        cityListArray = JSON.parse(cityListString);
+        $("#cityButtons").html("");
+        $("#cityButtons").empty();
 
+        for (x in cityListArray) {
+            $("#cityButtons").append("<br><button type='button' class='btn btn-primary m-1'>" + cityListArray[x] + "</button>");
+        }
+    }
+    }); 

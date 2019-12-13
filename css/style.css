@@ -1,13 +1,26 @@
 .jumbotron {
     background-color: blue;
+    padding: 10px;
+}
+
+#main-title {
+    font-family: 'Kaushan Script', cursive;
+    text-align: center;
+    font-size: 72px;
 }
 
 #city-select{
     background-color: cornflowerblue;
+    scroll-padding-left: 20px;
+    text-align: left;
 }
 
 #current-info{
     background-color: darkturquoise;
+    font-family: 'Times New Roman', Times, serif;
+    font-weight: bolder;
+    padding-left: 50px;
+    text-align: left;
 }
 
 #forecast-info{
@@ -16,8 +29,13 @@
 
 .forecast-day{
     background-color: dodgerblue;
-    width: 100px;
+    width: 105px;
     margin: 10px;
     height: 200px;
     border-radius: 10px;
+    text-align: center;
+    font-weight: bold;
 }
+
+
+/* font-family: 'Kaushan Script', cursive; */
