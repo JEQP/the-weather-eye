@@ -57,7 +57,7 @@ function buttonList() {
 function getWeather() {
 
     if (location.protocol === 'http:') {
-        currentWeatherURL = "http://api.openweathermap.org/data/2.5/weather?q=" + citySelected + "&APPID=" + API_KEY;
+        currentWeatherURL = "https://cors-anywhere.herokuapp.com/api.openweathermap.org/data/2.5/weather?q=" + citySelected + "&APPID=" + API_KEY;
      } else {
         currentWeatherURL = "https://cors-anywhere.herokuapp.com/api.openweathermap.org/data/2.5/weather?q=" + citySelected + "&APPID=" + API_KEY;
      }
@@ -104,7 +104,7 @@ function getWeather() {
         var lat = response.coord.lat;
         var lon = response.coord.lon;
         if (location.protocol === 'http:') {
-            uvURL = "http://api.openweathermap.org/data/2.5/uvi?appid=" + API_KEY + "&lat=" + lat + "&lon=" + lon;
+            uvURL = "https://cors-anywhere.herokuapp.com/api.openweathermap.org/data/2.5/uvi?appid=" + API_KEY + "&lat=" + lat + "&lon=" + lon;
          } else {
             uvURL = "https://cors-anywhere.herokuapp.com/api.openweathermap.org/data/2.5/uvi?appid=" + API_KEY + "&lat=" + lat + "&lon=" + lon;
          }
@@ -163,7 +163,7 @@ function getWeather() {
 function getForecast() {
 
     if (location.protocol === 'http:') {
-        weatherURL = "http://api.openweathermap.org/data/2.5/forecast?q=" + citySelected + "&APPID=" + API_KEY;
+        weatherURL = "https://cors-anywhere.herokuapp.com/api.openweathermap.org/data/2.5/forecast?q=" + citySelected + "&APPID=" + API_KEY;
      } else {
         weatherURL = "https://cors-anywhere.herokuapp.com/api.openweathermap.org/data/2.5/forecast?q=" + citySelected + "&APPID=" + API_KEY;
      }
