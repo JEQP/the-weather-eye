@@ -229,39 +229,25 @@ function getForecast() {
 // On click function to get data entered in search box. Returns as citySelected
 $("#searchButton").click(function (event) {
     event.stopPropagation();
-    console.log("Clicked " + $(this).parent().children("#textInput").attr("id"));
-    console.log("Parent ID: " + $(this).parent().attr("id"));
+
     if ($(this).parent().attr("id") === "searchForm") {
 
         citySelected = $("#textInput").val().trim();
     }
-    if (event.key==="Enter"){
-        console.log("Enter Key pressed");
-    }
-    console.log("city entered: " + citySelected);
+
     getForecast();
     getWeather();
     buttonList();
 });
 
 $("#textInput").on('keyup', function (event) {
-    
-if (event.keyCode === 13) {
-    $("#searchButton").click();
-console.log("entered");
-}
-});
-//     console.log("Clicked " + $(this).parent().children("#textInput").attr("id"));
-//     console.log("Parent ID: " + $(this).parent().attr("id"));
-//     if ($(this).parent().attr("id") === "searchForm") {
 
-//         citySelected = $("#textInput").val().trim();
-//     }
-//     console.log("city entered: " + citySelected);
-//     getForecast();
-//     getWeather();
-//     buttonList();
-// });
+    if (event.keyCode === 13) {
+        $("#searchButton").click();
+
+    }
+});
+
 
 
 
@@ -281,17 +267,17 @@ $(document).ready(function () {
             $("#cityButtons").append("<br><button type='button' class='btn btn-primary m-1'>" + cityListArray[x] + "</button>");
         }
     }
-    
 
 
-  
-    $(".btn").click(function(event){
+
+
+    $(".btn").click(function (event) {
         event.stopPropagation();
         citySelected = $(this).text();
         getWeather();
         getForecast();
-    
-    
+
+
     })
 });
 
@@ -316,7 +302,7 @@ function showPosition(position) {
             $("#cityCurrent").html("Local Weather");
         }
 
-        citySelected=response.name;
+        citySelected = response.name;
         getWeather();
         getForecast();
 
