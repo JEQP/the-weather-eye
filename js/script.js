@@ -62,7 +62,7 @@ function getWeather() {
         currentWeatherURL = "https://api.openweathermap.org/data/2.5/weather?q=" + citySelected + "&APPID=" + API_KEY;
      }
 
-    var currentWeatherURL = "http://api.openweathermap.org/data/2.5/weather?q=" + citySelected + "&APPID=" + API_KEY;
+
 
     $.getJSON(currentWeatherURL, function (response) {
         $("#cityCurrent").html(response.name);
