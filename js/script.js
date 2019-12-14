@@ -2,6 +2,9 @@
 var citySelected = "string";
 var API_KEY = "8d81f57ecd6887950a785296ebf29d30";
 var cityListArray = [];
+var currentWeatherURL="string";
+var uvURL = "string";
+var weatherURL = "string";
 // SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
 
 // On click Search function
@@ -52,6 +55,13 @@ function buttonList() {
 
 
 function getWeather() {
+
+    if (location.protocol === 'http:') {
+        currentWeatherURL = "http://api.openweathermap.org/data/2.5/weather?q=" + citySelected + "&APPID=" + API_KEY;
+     } else {
+        currentWeatherURL = "https://api.openweathermap.org/data/2.5/weather?q=" + citySelected + "&APPID=" + API_KEY;
+     }
+
     var currentWeatherURL = "http://api.openweathermap.org/data/2.5/weather?q=" + citySelected + "&APPID=" + API_KEY;
 
     $.getJSON(currentWeatherURL, function (response) {
@@ -93,7 +103,12 @@ function getWeather() {
 
         var lat = response.coord.lat;
         var lon = response.coord.lon;
-        var uvURL = "http://api.openweathermap.org/data/2.5/uvi?appid=" + API_KEY + "&lat=" + lat + "&lon=" + lon;
+        if (location.protocol === 'http:') {
+            uvURL = "http://api.openweathermap.org/data/2.5/uvi?appid=" + API_KEY + "&lat=" + lat + "&lon=" + lon;
+         } else {
+            uvURL = "https://api.openweathermap.org/data/2.5/uvi?appid=" + API_KEY + "&lat=" + lat + "&lon=" + lon;
+         }
+       
 
         $.getJSON(uvURL, function (uvResponse) {
 
@@ -147,7 +162,12 @@ function getWeather() {
 // takes data from returned json object and displays it in forecast-info
 function getForecast() {
 
-    var weatherURL = "http://api.openweathermap.org/data/2.5/forecast?q=" + citySelected + "&APPID=" + API_KEY;
+    if (location.protocol === 'http:') {
+        weatherURL = "http://api.openweathermap.org/data/2.5/forecast?q=" + citySelected + "&APPID=" + API_KEY;
+     } else {
+        weatherURL = "https://api.openweathermap.org/data/2.5/forecast?q=" + citySelected + "&APPID=" + API_KEY;
+     }
+
 
     $.getJSON(weatherURL, function (json) {
         $("#city").html(citySelected);
