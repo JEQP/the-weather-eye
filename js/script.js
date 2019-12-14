@@ -314,7 +314,15 @@ function showPosition(position) {
 
     var lat = position.coords.latitude;
     var lon = position.coords.longitude;
-    var startURL = "http://api.openweathermap.org/data/2.5/weather?lat=" + lat + "&lon=" + lon + "&appid=" + API_KEY;
+
+    if (location.protocol === 'http:') {
+        startURL = "https://cors-anywhere.herokuapp.com/api.openweathermap.org/data/2.5/weather?lat=" + lat + "&lon=" + lon + "&appid=" + API_KEY;
+     } else {
+        startURL = "https://cors-anywhere.herokuapp.com/api.openweathermap.org/data/2.5/weather?lat=" + lat + "&lon=" + lon + "&appid=" + API_KEY;
+     }
+
+
+
 
     $.getJSON(startURL, function (response) {
         $("#cityCurrent").html(response.name);
