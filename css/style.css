@@ -10,17 +10,26 @@
 }
 
 #city-select{
-    background-color: cornflowerblue;
+    /* background-color: cornflowerblue; */
+    background-color: #FAFAFA;
     scroll-padding-left: 20px;
     text-align: left;
+    border-radius: 5px;
+    border-width: 2px;
+    border-style: solid;
+    border-color: blue;
 }
 
 #current-info{
-    background-color: darkturquoise;
+    background-color: #FAFAFA;
     font-family: 'Times New Roman', Times, serif;
     font-weight: bolder;
     padding-left: 50px;
     text-align: left;
+    border-radius: 5px;
+    border-width: 2px;
+    border-style: solid;
+    border-color: blue;
 }
 
 #forecast-info{

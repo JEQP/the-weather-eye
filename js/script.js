@@ -41,29 +41,6 @@ function buttonList() {
     cityListString = JSON.stringify(cityListArray);
     localStorage.setItem("citiesSearched", cityListString);
 
-
-    // // run through the array and create and assign buttons
-    // for (var i=0; i<movies.length; i++){
-    //   $("#cityButtons").append("<button>"+movies[i]+"</button>");
-    // }
-    //     // for (var i=0; i<cityListArray.length;i++){
-
-    // }
-
-
-
-    // var blockClicked = $(this).parent().attr("id");
-
-    // var pos = blockClicked - 9; // converts id to array position
-
-    // daysActivities[pos] = $("#" + blockClicked).find(".inputbox").val(); // adds text in the box into the array
-
-    // toDoList = JSON.stringify(daysActivities); // stringify array
-    // localStorage.setItem("hourText", toDoList); // store array
-    // $("#" + blockClicked).find(".inputbox").addClass("hide"); // hides input box
-    // $("#" + blockClicked).find(".textarea").removeClass("hide"); // shows text
-    // displayActivities();
-
 }
 
 
@@ -76,10 +53,8 @@ function buttonList() {
 
 function getWeather() {
     var currentWeatherURL = "http://api.openweathermap.org/data/2.5/weather?q=" + citySelected + "&APPID=" + API_KEY;
-    console.log("CurrentURL: " + currentWeatherURL);
 
     $.getJSON(currentWeatherURL, function (response) {
-        console.log(response);
         $("#cityCurrent").html(response.name);
         var a = new Date(response.dt * 1000);
 
@@ -92,7 +67,6 @@ function getWeather() {
 
         $("#dateCurrent").html(dateCurrent);
         var currentIcon = response.weather[0].icon;
-        console.log("icon: " + currentIcon);
         var iconURL = "http://openweathermap.org/img/w/" + currentIcon + ".png";
         $("#iconCurrent").attr("src", iconURL);
         var cTemp = response.main.temp - 273.15;
@@ -114,6 +88,7 @@ function getWeather() {
         $("#tempCurrent").html("Temperature at " + tempTime + ": " + cTemp + " °C");
         $("#humidityCurrent").html("Humidity: " + response.main.humidity);
         var wSpeed = response.wind.speed * 3.6;
+        wSpeed = wSpeed.toFixed(1);
         $("#windCurrent").html("Wind Speed: " + wSpeed + " kph");
 
         var lat = response.coord.lat;
@@ -155,7 +130,7 @@ function getWeather() {
         $("#cityButtons").empty();
 
         for (x in cityListArray) {
-            $("#cityButtons").append("<button>" + cityListArray[x] + "</button>");
+            $("#cityButtons").append("<br><button type='button' class='btn btn-primary m-1'>" + cityListArray[x] + "</button>");
         }
         cityListString = JSON.stringify(cityListArray);
         localStorage.setItem("citiesSearched", cityListString);
@@ -251,23 +226,6 @@ function getForecast() {
 }
 
 
-// on click delete city button function
-// remove city from localstorage
-// call button list function
-
-// button list function
-// gets localstorage
-// displays buttons for previously searched cities
-
-// geolocation function
-// detect location, convert to city string
-// calls ajax
-
-// start doc
-// call button list function
-// call geolocation
-
-
 // On click function to get data entered in search box. Returns as citySelected
 $("#searchButton").click(function (event) {
     event.stopPropagation();
@@ -277,14 +235,40 @@ $("#searchButton").click(function (event) {
 
         citySelected = $("#textInput").val().trim();
     }
+    if (event.key==="Enter"){
+        console.log("Enter Key pressed");
+    }
     console.log("city entered: " + citySelected);
     getForecast();
     getWeather();
     buttonList();
 });
+
+$("#textInput").on('keyup', function (event) {
+    
+if (event.keyCode === 13) {
+    $("#searchButton").click();
+console.log("entered");
+}
+});
+//     console.log("Clicked " + $(this).parent().children("#textInput").attr("id"));
+//     console.log("Parent ID: " + $(this).parent().attr("id"));
+//     if ($(this).parent().attr("id") === "searchForm") {
+
+//         citySelected = $("#textInput").val().trim();
+//     }
+//     console.log("city entered: " + citySelected);
+//     getForecast();
+//     getWeather();
+//     buttonList();
+// });
+
+
+
 // Checks for saved cities when page loads and adds them 
 $(document).ready(function () {
     var cityListString = localStorage.getItem("citiesSearched"); // this is the string from the local storage
+    getLocation();
     if (cityListString === null) {
         return;
     }
@@ -297,4 +281,51 @@ $(document).ready(function () {
             $("#cityButtons").append("<br><button type='button' class='btn btn-primary m-1'>" + cityListArray[x] + "</button>");
         }
     }
-    }); 
+    
+
+
+  
+    $(".btn").click(function(event){
+        event.stopPropagation();
+        citySelected = $(this).text();
+        getWeather();
+        getForecast();
+    
+    
+    })
+});
+
+//gets geolocation from browser
+function getLocation() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(showPosition);
+    } else {
+        x.innerHTML = "Geolocation is not supported by this browser.";
+    }
+}
+// shows weather based on geolocation when page loads
+function showPosition(position) {
+
+    var lat = position.coords.latitude;
+    var lon = position.coords.longitude;
+    var startURL = "http://api.openweathermap.org/data/2.5/weather?lat=" + lat + "&lon=" + lon + "&appid=" + API_KEY;
+
+    $.getJSON(startURL, function (response) {
+        $("#cityCurrent").html(response.name);
+        if (response.name == "") {
+            $("#cityCurrent").html("Local Weather");
+        }
+
+        citySelected=response.name;
+        getWeather();
+        getForecast();
+
+
+        // If the callback fails, ensure that the city is not included in the string
+    }).fail(function () {
+        $("#cityCurrent").html("Location Undetected");
+    });
+
+
+}
+
