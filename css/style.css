@@ -46,5 +46,9 @@
     font-weight: bold;
 }
 
+#sticky-footer {
+    flex-shrink: none;
+  }
+
 
 /* font-family: 'Kaushan Script', cursive; */

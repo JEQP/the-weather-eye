@@ -2,9 +2,11 @@
 var citySelected = "string";
 var API_KEY = "8d81f57ecd6887950a785296ebf29d30";
 var cityListArray = [];
-var currentWeatherURL="string";
+var currentWeatherURL = "string";
 var uvURL = "string";
 var weatherURL = "string";
+const API_KEY_AQ = "db37dfcafd8cb5d9d27b6dce03d92f0fd89ebf44";
+var aqURL = "string";
 // SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
 
 // On click Search function
@@ -20,6 +22,13 @@ function buttonList() {
     //convert string toDoList into array daysActivities
     if (cityListString === null) {
         cityListArray = [citySelected];
+        $("#cityButtons").html("");
+        $("#cityButtons").empty();
+    
+        for (x in cityListArray) {
+            $("#cityButtons").append("<br><button type='button' class='btn btn-primary m-1'>" + cityListArray[x] + "</button><button type='button' class='close' aria-label='Close'><span aria-hidden='true'>&times;</span></button>");
+        }
+    
     }
     else {
         cityListArray = JSON.parse(cityListString);
@@ -31,18 +40,51 @@ function buttonList() {
         else {
             cityListArray.push(citySelected);
         }
+        $("#cityButtons").html("");
+        $("#cityButtons").empty();
+    
+        for (x in cityListArray) {
+            $("#cityButtons").append("<br><button type='button' class='btn btn-primary m-1'>" + cityListArray[x] + "</button><button type='button' class='close' aria-label='Close'><span aria-hidden='true'>&times;</span></button>");
+        }
+    
     }
-    $("#cityButtons").html("");
-    $("#cityButtons").empty();
+    // $("#cityButtons").html("");
+    // $("#cityButtons").empty();
 
-    for (x in cityListArray) {
-        $("#cityButtons").append("<br><button type='button' class='btn btn-primary m-1'>" + cityListArray[x] + "</button>");
-    }
+    // for (x in cityListArray) {
+    //     $("#cityButtons").append("<br><button type='button' class='btn btn-primary m-1'>" + cityListArray[x] + "</button><button type='button' class='close' aria-label='Close'><span aria-hidden='true'>&times;</span></button>");
+    // }
 
     // restore city list
 
     cityListString = JSON.stringify(cityListArray);
     localStorage.setItem("citiesSearched", cityListString);
+
+    $(".close").on("click", function (event) {
+        event.stopPropagation();
+        console.log("x clicked");
+        citySelected = $(this).prev().text(); // this will select the previous button to the one clicked, which will be the city button
+        console.log("citySelected: " + citySelected)
+        cityListArray.splice($.inArray(citySelected, cityListArray), 1);
+
+        // $("#cityButtons").html("");
+        // $("#cityButtons").empty();
+
+        // for (x in cityListArray) {
+        //     $("#cityButtons").append("<div><button type='button' class='btn btn-primary m-1'>" + cityListArray[x] + "</button><button type='button' class='close' aria-label='Close'><span aria-hidden='true'>&times;</span></button></div>");
+        // }
+        cityListString = JSON.stringify(cityListArray);
+        localStorage.setItem("citiesSearched", cityListString);
+        popCityList();
+    });
+
+    $(".btn").on("click", function (event) {
+        event.stopPropagation();
+        citySelected = $(this).text();
+        getWeather();
+        getForecast();
+    });
+
 
 }
 
@@ -57,10 +99,10 @@ function buttonList() {
 function getWeather() {
 
     if (location.protocol === 'http:') {
+        currentWeatherURL = "http://cors-anywhere.herokuapp.com/api.openweathermap.org/data/2.5/weather?q=" + citySelected + "&APPID=" + API_KEY;
+    } else {
         currentWeatherURL = "https://cors-anywhere.herokuapp.com/api.openweathermap.org/data/2.5/weather?q=" + citySelected + "&APPID=" + API_KEY;
-     } else {
-        currentWeatherURL = "https://cors-anywhere.herokuapp.com/api.openweathermap.org/data/2.5/weather?q=" + citySelected + "&APPID=" + API_KEY;
-     }
+    }
 
 
 
@@ -104,14 +146,15 @@ function getWeather() {
         var lat = response.coord.lat;
         var lon = response.coord.lon;
         if (location.protocol === 'http:') {
+            uvURL = "http://cors-anywhere.herokuapp.com/api.openweathermap.org/data/2.5/uvi?appid=" + API_KEY + "&lat=" + lat + "&lon=" + lon;
+        } else {
             uvURL = "https://cors-anywhere.herokuapp.com/api.openweathermap.org/data/2.5/uvi?appid=" + API_KEY + "&lat=" + lat + "&lon=" + lon;
-         } else {
-            uvURL = "https://cors-anywhere.herokuapp.com/api.openweathermap.org/data/2.5/uvi?appid=" + API_KEY + "&lat=" + lat + "&lon=" + lon;
-         }
-       
+        }
+
+        // Get UV index and display it, changing colour based on value
 
         $.getJSON(uvURL, function (uvResponse) {
-
+            // console.log("uvURL: "+uvURL);
             $("#uvCurrent").html("UV Index: " + uvResponse.value);
             if (uvResponse.value < 2.5) {
                 $("#uvCurrent").css('color', 'palegoldenrod');
@@ -131,6 +174,44 @@ function getWeather() {
 
         });
 
+        // Air quality API call based on geolocation. (the colons in the documentation are superfluous). Change colour based on level.
+
+        if (location.protocol === 'http:') {
+            aqURL = "http://api.waqi.info/feed/geo:" + lat + ";" + lon + "/?token=" + API_KEY_AQ;
+        }
+        else {
+            aqURL = "https://api.waqi.info/feed/geo:" + lat + ";" + lon + "/?token=" + API_KEY_AQ;
+        }
+
+
+        $.getJSON(aqURL, function (aqResponse) {
+
+            $("#aqCurrent").html('Air Quality Index: ' + aqResponse.data.aqi);
+
+            if (aqResponse.data.aqi < 51) {
+                $("#aqCurrent").css('color', 'teal');
+            }
+            if (aqResponse.data.aqi > 50 && aqResponse.data.aqi < 101) {
+                $("#aqCurrent").css('color', 'gold');
+            }
+            if (aqResponse.data.aqi > 100 && aqResponse.data.aqi < 151) {
+                $("#aqCurrent").css('color', 'coral');
+            }
+            if (aqResponse.data.aqi > 150 && aqResponse.data.aqi < 201) {
+                $("#aqCurrent").css('color', 'crimson');
+            }
+            if (aqResponse.data.aqi > 200 && aqResponse.data.aqi < 301) {
+                $("#aqCurrent").css('color', 'indigo');
+            }
+            if (aqResponse.data.aqi > 300) {
+                $("#aqCurrent").css('color', 'maroon');
+            }
+
+
+        });
+
+
+
 
         // If the callback fails, ensure that the city is not included in the string
     }).fail(function () {
@@ -145,7 +226,7 @@ function getWeather() {
         $("#cityButtons").empty();
 
         for (x in cityListArray) {
-            $("#cityButtons").append("<br><button type='button' class='btn btn-primary m-1'>" + cityListArray[x] + "</button>");
+            $("#cityButtons").append("<br><button type='button' class='btn btn-primary m-1'>" + cityListArray[x] + "</button><button type='button' class='close' aria-label='Close'><span aria-hidden='true'>&times;</span></button>");
         }
         cityListString = JSON.stringify(cityListArray);
         localStorage.setItem("citiesSearched", cityListString);
@@ -163,10 +244,10 @@ function getWeather() {
 function getForecast() {
 
     if (location.protocol === 'http:') {
+        weatherURL = "http://cors-anywhere.herokuapp.com/api.openweathermap.org/data/2.5/forecast?q=" + citySelected + "&APPID=" + API_KEY;
+    } else {
         weatherURL = "https://cors-anywhere.herokuapp.com/api.openweathermap.org/data/2.5/forecast?q=" + citySelected + "&APPID=" + API_KEY;
-     } else {
-        weatherURL = "https://cors-anywhere.herokuapp.com/api.openweathermap.org/data/2.5/forecast?q=" + citySelected + "&APPID=" + API_KEY;
-     }
+    }
 
 
     $.getJSON(weatherURL, function (json) {
@@ -246,35 +327,17 @@ function getForecast() {
 }
 
 
-// On click function to get data entered in search box. Returns as citySelected
-$("#searchButton").click(function (event) {
-    event.stopPropagation();
 
-    if ($(this).parent().attr("id") === "searchForm") {
-
-        citySelected = $("#textInput").val().trim();
-    }
-
-    getForecast();
-    getWeather();
-    buttonList();
-});
-
-$("#textInput").on('keyup', function (event) {
-
-    if (event.keyCode === 13) {
-        $("#searchButton").click();
-
-    }
-});
 
 
 
 
 // Checks for saved cities when page loads and adds them 
-$(document).ready(function () {
+$(document).ready(function popCityList() {
     var cityListString = localStorage.getItem("citiesSearched"); // this is the string from the local storage
-    getLocation();
+    if ($("#cityCurrent").text() == "") {
+        getLocation();
+    }
     if (cityListString === null) {
         return;
     }
@@ -284,13 +347,34 @@ $(document).ready(function () {
         $("#cityButtons").empty();
 
         for (x in cityListArray) {
-            $("#cityButtons").append("<br><button type='button' class='btn btn-primary m-1'>" + cityListArray[x] + "</button>");
+            $("#cityButtons").append("<br><button type='button' class='btn btn-primary m-1'>" + cityListArray[x] + "</button><button type='button' class='close' aria-label='Close'><span aria-hidden='true'>&times;</span></button>");
         }
     }
 
 
+    // Delete from list
+
+    $(".close").click(function (event) {
+        event.stopPropagation();
+        console.log("x clicked");
+        citySelected = $(this).prev().text(); // this will select the previous button to the one clicked, which will be the city button
+        console.log("citySelected: " + citySelected)
+        cityListArray.splice($.inArray(citySelected, cityListArray), 1);
+
+        // $("#cityButtons").html("");
+        // $("#cityButtons").empty();
+
+        // for (x in cityListArray) {
+        //     $("#cityButtons").append("<div><button type='button' class='btn btn-primary m-1'>" + cityListArray[x] + "</button><button type='button' class='close' aria-label='Close'><span aria-hidden='true'>&times;</span></button></div>");
+        // }
+        cityListString = JSON.stringify(cityListArray);
+        localStorage.setItem("citiesSearched", cityListString);
+        popCityList();
 
 
+    })
+
+    // select city to display
     $(".btn").click(function (event) {
         event.stopPropagation();
         citySelected = $(this).text();
@@ -316,11 +400,11 @@ function showPosition(position) {
     var lon = position.coords.longitude;
 
     if (location.protocol === 'http:') {
+        startURL = "http://cors-anywhere.herokuapp.com/api.openweathermap.org/data/2.5/weather?lat=" + lat + "&lon=" + lon + "&appid=" + API_KEY;
+    } else {
         startURL = "https://cors-anywhere.herokuapp.com/api.openweathermap.org/data/2.5/weather?lat=" + lat + "&lon=" + lon + "&appid=" + API_KEY;
-     } else {
-        startURL = "https://cors-anywhere.herokuapp.com/api.openweathermap.org/data/2.5/weather?lat=" + lat + "&lon=" + lon + "&appid=" + API_KEY;
-     }
-
+    }
+    console.log("startURL: " + startURL);
 
 
 
@@ -343,3 +427,49 @@ function showPosition(position) {
 
 }
 
+$(".close").on("click", function (event) {
+    event.stopPropagation();
+    console.log("x clicked");
+    citySelected = $(this).prev().text(); // this will select the previous button to the one clicked, which will be the city button
+    console.log("citySelected: " + citySelected)
+    cityListArray.splice($.inArray(citySelected, cityListArray), 1);
+
+    // $("#cityButtons").html("");
+    // $("#cityButtons").empty();
+
+    // for (x in cityListArray) {
+    //     $("#cityButtons").append("<div><button type='button' class='btn btn-primary m-1'>" + cityListArray[x] + "</button><button type='button' class='close' aria-label='Close'><span aria-hidden='true'>&times;</span></button></div>");
+    // }
+    cityListString = JSON.stringify(cityListArray);
+    localStorage.setItem("citiesSearched", cityListString);
+    popCityList();
+});
+
+$(".btn").on("click", function (event) {
+    event.stopPropagation();
+    citySelected = $(this).text();
+    getWeather();
+    getForecast();
+});
+
+// On click function to get data entered in search box. Returns as citySelected
+$("#searchButton").click(function (event) {
+    event.stopPropagation();
+
+    if ($(this).parent().attr("id") === "searchForm") {
+
+        citySelected = $("#textInput").val().trim();
+    }
+
+    getForecast();
+    getWeather();
+    buttonList();
+});
+
+$("#textInput").on('keyup', function (event) {
+
+    if (event.keyCode === 13) {
+        $("#searchButton").click();
+
+    }
+});
